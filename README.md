@@ -12,11 +12,19 @@ packaged python script, you will need to download and run it from some directory
 
 ## Running
 osu!novideo can be ran by simply running the python file.
-```bash
+```sh
 python osu!novideo.py -h
 ```
 `-h` or `--help` will show all script parameters. Running with no parameters **performs deletion in the current
 directory.**
+
+## Extensions
+osu!novideo removes every `avi` extension by default, although another common extension is `flv`.
+
+## Example usage
+```sh
+python osu!novideo --path D:\Games\osu!\Songs\ --ext flv
+```
 
 
 [zip]: https://github.com/PcBoy111/osu-novideo/archive/master.zip
