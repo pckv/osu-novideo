@@ -64,7 +64,11 @@ def remove_files(path: str, ext: str):
                         print("Removing some file, at least (folder and name is not readable).")
 
                 # Remove the file (there's no turning back!)
-                remove(file.path)
+                try:
+                    remove(file.path)
+                except PermissionError:
+                    print("No permission to remove files. Perhaps you're not running as admin?")
+                    return
 
     print("Removed {0} files of size {1}GB.".format(count, to_gb(size_removed)))
 
