@@ -24,6 +24,16 @@ def to_gb(size: int):
     return round(size / 1024**3, 3)
 
 
+def confirm(prompt: str, end: str=" [Y/n] "):
+    """ Confirm a task, prompting a string and parsing Y/n """
+    user_input = input(str(prompt) + str(end))
+
+    if user_input.lower() == "y":
+        return True
+
+    return False
+
+
 def remove_files(path: str, ext: str):
     """ Go through all folders and remove any *.ext in the folder
     (not further recursively) """
@@ -76,7 +86,12 @@ def main():
         print("INVALID PATH")
         return False
 
-    remove_files(args.path, ext=args.ext)
+    path = _path.abspath(args.path)
+
+    if confirm("Are you sure you want to remove all songs from\n\"{dir}\"?".format(dir=path)):
+        remove_files(args.path, ext=args.ext)
+    else:
+        print("Task aborted.")
 
 
 if __name__ == "__main__":
