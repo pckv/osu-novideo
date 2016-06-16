@@ -50,7 +50,7 @@ def remove_files(path: str, ext: str):
     log = partial(output_log, handler=log_handler)
 
     # Log the time the command started
-    log("Started {0}; removing *.{ext} from \"{path}\":".format(
+    log("Started {0}; removing *.{ext} from \"{path}\"".format(
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"), path=path, ext=ext))
 
     for entry in scandir(path):
@@ -69,12 +69,12 @@ def remove_files(path: str, ext: str):
 
                 # Print when removing file
                 try:
-                    log("Removing file \"{0.name}\".".format(file))
+                    log("Removing file \"{0.name}\"".format(file))
                 except UnicodeEncodeError:
                     try:
-                        log("Removing unreadable file in folder \"{0.name}\".".format(entry))
+                        log("Removing unreadable file in folder \"{0.name}\"".format(entry))
                     except UnicodeEncodeError:
-                        log("Removing some file, at least (folder and name is not readable).")
+                        log("Removing some file, at least (folder and name is not readable)")
 
                 # Remove the file (there's no turning back!)
                 try:
@@ -83,7 +83,7 @@ def remove_files(path: str, ext: str):
                     log("No permission to remove files. Perhaps you're not running as admin?")
                     return
 
-    log("Removed {0} files of size {1}GB.".format(count, to_gb(size_removed)))
+    log("Removed {0} files of size {1}GB".format(count, to_gb(size_removed)))
     log_handler.close()
 
 
