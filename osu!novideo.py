@@ -4,9 +4,12 @@
 from os import scandir, remove, stat
 from os import path as _path
 from argparse import ArgumentParser
+from functools import partial
+from datetime import datetime
+import typing
 
 
-__version__ = "0.2"
+__version__ = "0.3"
 
 
 def valid_path(path: str):
@@ -31,11 +34,24 @@ def confirm(prompt: str, end: str=" [Y/n] "):
     return user_input.lower() == "y"
 
 
+def output_log(text: str, handler: typing.io):
+    """ Print to stdout and write to a stream. """
+    print(text, file=handler)
+    print(text)
+
+
 def remove_files(path: str, ext: str):
     """ Go through all folders and remove any *.ext in the folder
     (not further recursively) """
-    count = 0
-    size_removed = 0
+    count, size_removed = 0, 0
+
+    # Create a log handler and define a function for writing to file
+    log_handler = open("osu!novideo.log", "a")
+    log = partial(output_log, handler=log_handler)
+
+    # Log the time the command started
+    log("Started {0}; removing *.{ext} from \"{path}\":".format(
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"), path=path, ext=ext))
 
     for entry in scandir(path):
         # We want to delete the file *in* a directory
@@ -53,21 +69,22 @@ def remove_files(path: str, ext: str):
 
                 # Print when removing file
                 try:
-                    print("Removing file {0.name}".format(file))
+                    log("Removing file \"{0.name}\".".format(file))
                 except UnicodeEncodeError:
                     try:
-                        print("Removing unreadable file in folder {0.name}".format(entry))
+                        log("Removing unreadable file in folder \"{0.name}\".".format(entry))
                     except UnicodeEncodeError:
-                        print("Removing some file, at least (folder and name is not readable).")
+                        log("Removing some file, at least (folder and name is not readable).")
 
                 # Remove the file (there's no turning back!)
                 try:
                     remove(file.path)
                 except PermissionError:
-                    print("No permission to remove files. Perhaps you're not running as admin?")
+                    log("No permission to remove files. Perhaps you're not running as admin?")
                     return
 
-    print("Removed {0} files of size {1}GB.".format(count, to_gb(size_removed)))
+    log("Removed {0} files of size {1}GB.".format(count, to_gb(size_removed)))
+    log_handler.close()
 
 
 def main():
@@ -77,10 +94,10 @@ def main():
 
     Afterwards deletes all found files with given extension"""
     parser = ArgumentParser(description="Remove useless videos from osu!/Songs/")
-    parser.add_argument("--path", "-p", help="Your osu!/Songs/ folder path", metavar="PATH", default="./",
+    parser.add_argument("--path", "-p", help="Your osu!/Songs/ folder path.", metavar="PATH", default="./",
                         type=valid_path)
-    parser.add_argument("--ext", "-e", help="File extension to remove", metavar="EXT", default="avi", type=str)
-    parser.add_argument("--version", "-V", help="Display the script's version", action="version",
+    parser.add_argument("--ext", "-e", help="File extension to remove.", metavar="EXT", default="avi", type=str)
+    parser.add_argument("--version", "-V", help="Display the script's version.", action="version",
                         version="%(prog)s {}".format(__version__))
     args = parser.parse_args()
 
