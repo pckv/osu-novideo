@@ -19,7 +19,7 @@ def valid_path(path: str):
 
 
 def to_gb(size: int):
-    """ Convert size to formatted gigabytes string.
+    """ Convert size to formatted float representing Gigabytes.
     size should be an int of bytes."""
     return round(size / 1024**3, 3)
 
@@ -27,11 +27,8 @@ def to_gb(size: int):
 def confirm(prompt: str, end: str=" [Y/n] "):
     """ Confirm a task, prompting a string and parsing Y/n """
     user_input = input(str(prompt) + str(end))
-
-    if user_input.lower() == "y":
-        return True
-
-    return False
+    
+    return user_input.lower() == "y":
 
 
 def remove_files(path: str, ext: str):
@@ -87,12 +84,12 @@ def main():
 
     # Exit when the path is invalid
     if not args.path:
-        print("INVALID PATH")
+        print("The given path is invalid.")
         return False
 
     path = _path.abspath(args.path)
 
-    if confirm("Are you sure you want to remove all songs from\n\"{dir}\"?".format(dir=path)):
+    if confirm("Are you sure you want to remove all .{ext} from\n\"{dir}\"?".format(ext=args.ext, dir=path)):
         remove_files(args.path, ext=args.ext)
     else:
         print("Task aborted.")
