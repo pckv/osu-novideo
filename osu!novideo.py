@@ -6,7 +6,7 @@ from os import path as _path
 from argparse import ArgumentParser
 
 
-__version__ = "0.1"
+__version__ = "0.2"
 
 
 def valid_path(path: str):
@@ -27,8 +27,8 @@ def to_gb(size: int):
 def confirm(prompt: str, end: str=" [Y/n] "):
     """ Confirm a task, prompting a string and parsing Y/n """
     user_input = input(str(prompt) + str(end))
-    
-    return user_input.lower() == "y":
+
+    return user_input.lower() == "y"
 
 
 def remove_files(path: str, ext: str):
@@ -80,6 +80,8 @@ def main():
     parser.add_argument("--path", "-p", help="Your osu!/Songs/ folder path", metavar="PATH", default="./",
                         type=valid_path)
     parser.add_argument("--ext", "-e", help="File extension to remove", metavar="EXT", default="avi", type=str)
+    parser.add_argument("--version", "-V", help="Display the script's version", action="version",
+                        version="%(prog)s {}".format(__version__))
     args = parser.parse_args()
 
     # Exit when the path is invalid
